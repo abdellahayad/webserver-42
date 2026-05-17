@@ -125,38 +125,6 @@ curl -i http://localhost:8080/
 curl -i -X POST -d 'key=val' http://localhost:8080/endpoint
 ```
 
-5. Debugging and memory checks
-
-- Use `gdb` to step through `main` and connection handling.
-- Use `valgrind --leak-check=full ./webserv` to check for leaks.
-
-6. Adding a feature or fixing a bug
-
-- Create a feature branch: `git checkout -b feat/<short-descr>`
-- Add tests or manual reproduction steps in a new `test/` file if applicable.
-- Keep commits focused and document behavior in the commit message.
-- Update `README.md` or add docs for new configuration options.
-- Open a pull request describing the change and how to test it.
-
-7. Code style & review notes
-
-- Follow the existing project style (clear names, modular functions).
-- Keep functions small and single-responsibility.
-- Add brief header comments for complex modules (see header template below).
-
-Recommended professional file header (add to top of modified source files)
-
-```
-/*
- * Project: webserv
- * File: <filename>
- * Description: <one-line purpose of this file>
- * Author: <Your Name> (<email>)
- * Created: YYYY-MM-DD
- * License: See LICENSE in project root
- */
-```
-
 Contributing
 ------------
 Contributions are welcome. Keep changes focused, add tests or manual steps to reproduce behavior, and open a PR with a clear description. For large changes, open an issue first to discuss design.
