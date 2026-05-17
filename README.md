@@ -1,4 +1,3 @@
-*webserv* — a compact educational HTTP server written in C++.
 
 Overview
 --------
@@ -132,12 +131,4 @@ Developer-friendly docs and tutorials
 Additional reading
 - CGI examples and best practices: search for RFC 3875 examples and server-specific CGI guides (Apache, Nginx)
 - Multipart/form-data and form handling: see RFC 7578 and practical guides on handling uploads in C/C++
-
-If you want, I can convert this section into a one-page printable reference, add direct excerpts (short quotes) of relevant RFC sections, or add local copies of small RFCs for offline reading.
-
-License
--------
-See the project root for license information (add a LICENSE file if needed).
-
-If you want a more concise developer README, diagrams (sequence/architecture), or example requests and responses added, tell me which and I will add them.
 
