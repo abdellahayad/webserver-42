@@ -1,102 +1,119 @@
-*This project has been created as part of the 42 curriculum by aayad, zel-yama, mohidbel.*
+*webserv* — a compact educational HTTP server written in C++.
 
-## Description
+Overview
+--------
+webserv is an instructional web server implemented for the 42 curriculum. It focuses on clarity and correctness, demonstrating how a production-style server handles socket I/O, request parsing, routing, static files, CGI execution, and concurrent clients using epoll.
 
-**webserv** is a lightweight HTTP web server implementation written in C++. The project aims to create a fully functional web server from scratch, capable of handling multiple client connections, parsing HTTP requests, processing configuration files, and serving web content. This project demonstrates deep understanding of network programming, HTTP protocol, system-level I/O operations, and multi-client handling.
+Core features
+-------------
+- Event-driven I/O using epoll (non-blocking sockets)
+- HTTP/1.1 request parsing and response generation
+- GET, POST, DELETE handling and configurable limits
+- CGI support for running external scripts/programs
+- Session tracking via cookies and a simple session manager
+- Static file serving and configurable error pages
 
-### Key Features
+Architecture summary
+--------------------
+The codebase is organized to separate concerns and make it easy to follow:
 
-- **Multi-client handling**: Event-driven architecture using EPOLL for managing multiple simultaneous connections
-- **HTTP Protocol Support**: Full implementation of GET, POST, DELETE methods with proper status codes and headers
-- **Configuration Parsing**: Custom configuration file parser supporting server blocks and location definitions
-- **CGI Support**: Common Gateway Interface implementation for dynamic content generation
-- **Request Handling**: Complete HTTP request parsing with support for headers, body parsing, and multipart form data
-- **Session Management**: Cookie-based session management and tracking
-- **Error Handling**: Proper HTTP error responses and handling of edge cases
-- **File Serving**: Static file serving with support for directory indexing and custom error pages
+| Path / Folder | Responsibility |
+|---|---|
+| `server/` | Server bootstrap, `main.cpp`, and connection lifecycle |
+| `server/serverSetup/` | Event loop, read/write helpers, and connection state |
+| `request/` | Request parsing, validation, multipart handling, sessions |
+| `Response/` | Response assembly, headers, static file serving, CGI glue |
+| `config/` | Example configs and parser inputs |
+| `tools/` | Small utilities and helpers |
+| `site/`, `errors/` | Example static site and error pages used in tests |
 
-### Architecture
+Key concepts (concise)
+----------------------
+- HTTP: a text protocol. Client sends a request line, headers, optional body; server responds with status, headers, and body.
+- CGI: server executes an external program, provides request data via environment variables/stdin, and relays stdout back to the client. Simple and compatible; not the most efficient for high throughput.
+- epoll: Linux I/O multiplexing API. Use non-blocking sockets and epoll to get notifications for readability/writability and scale to many connections without threads per socket.
 
-The server is organized into several modules:
+HTTP reference tables
+---------------------
 
-- **server/**: Core server logic, event loop, and client management
-- **request/**: HTTP request parsing, validation, and session management
-- **Response/**: Response generation and CGI execution
-- **config/**: Example configuration files for testing
+Methods
+| Method | Description |
+|---|---|
+| GET | Read a resource |
+| POST | Send data to the server (forms, files) |
+| DELETE | Remove a resource |
 
-## Instructions
+Status codes (common)
+| Code | Meaning |
+|---:|---|
+| 200 | OK |
+| 201 | Created |
+| 301 | Moved Permanently |
+| 400 | Bad Request |
+| 403 | Forbidden |
+| 404 | Not Found |
+| 413 | Payload Too Large |
+| 500 | Internal Server Error |
 
-### Compilation
+CGI flow (high-level)
+----------------------
+1. Server recognizes a CGI-enabled path.
+2. Build environment variables: `REQUEST_METHOD`, `QUERY_STRING`, `CONTENT_LENGTH`, etc.
+3. Spawn the process, pipe request body to its stdin.
+4. Read the program's stdout (headers + body) and forward to the client.
 
-The project uses a Makefile for building. To compile:
+Build and run
+-------------
+Build the project using the provided `Makefile`:
 
 ```bash
 make
 ```
 
-This will create the `webserv` executable.
-
-### Clean Build
+Run the server (optional: pass a config file):
 
 ```bash
-make re        # Full rebuild (clean + compile)
-make clean     # Remove object files
-make fclean    # Remove all generated files
+./webserv [config/zel-yama.conf]
 ```
 
-### Running the Server
+Quick test
+---------
+Fetch the root index:
 
 ```bash
-./webserv [config_file]
+curl -i http://localhost:8080/
 ```
 
-If no configuration file is specified, the server will look for a default configuration.
+Configuration
+-------------
+Example configuration files live in the `config/` folder. Typical server block options include `listen`, `server_name`, `root`, `location`, `allowed_methods`, and `body_max_byte`.
 
-### Configuration
+Where to start in the code
+--------------------------
+- `server/main.cpp`: program entry and server bootstrap
+- `server/serverSetup/eventLoop.cpp`: epoll loop and event dispatch
+- `request/RequestParser.cpp`: parsing logic for request line, headers, and body
+- `Response/cgi.cpp`: CGI invocation and output handling
 
-Example configuration files are provided in the `config/` directory. A basic configuration looks like:
+Contributing
+------------
+Contributions are welcome. Keep changes focused, add tests or manual steps to reproduce behavior, and open a PR with a clear description. For large changes, open an issue first to discuss design.
 
-```
-server {
-    listen 8080;
-    server_name example.com;
-    root /var/www/html;
-    
-    location / {
-        allowed_methods GET POST DELETE;
-        body_max_byte 1000000;
-    }
-}
-```
+Authors
+-------
+- ayad — response handling and CGI
+- zel-yama — configuration parser and server core
+- mohidbel — request parsing, sessions, cookies
 
-### Testing
+References
+----------
+- HTTP: RFC 7230–7235
+- CGI: RFC 3875
+- epoll: Linux man pages and epoll tutorials
 
-```bash
-curl http://localhost:8080/        # Run basic tests
-```
+License
+-------
+See the project root for license information (add a LICENSE file if needed).
 
-## Resources
-
-### HTTP Protocol References
-- [RFC 1945 - HTTP/1.0 Message Syntax and Routing](https://datatracker.ietf.org/doc/html/rfc1945)
-- [tutorialspoint - HTTP TUTORIAL](https://www.tutorialspoint.com/http/)
-
-### System Programming
-- [Non-Blocking Sockets and I/O Multiplexing with epoll in C](https://medium.com/%40hajorda/non-blocking-sockets-and-i-o-multiplexing-with-epoll-in-c-bd3d8e54c20a)
-- [ Nonblocking I/O pdf](https://web.stanford.edu/class/archive/cs/cs110/cs110.1206/lectures/19-slides.pdf)
-- [ Nonblocking I/O site](https://www.ibm.com/docs/en/i/7.2.0?topic=designs-example-nonblocking-io-select)
-- [Reading unkown number of bytes from a non-blocking socket](https://cplusplus.com/forum/beginner/285198/)
-- [USING EPOLL](https://www.dumais.io/page_c5b8d03166dd641c5c1c67d47a46bb4a.html#:~:text=In%20Level,to%20the%20TX%20buffer%2C%20you)
-- [Linux man pages - socket(2)](https://man7.org/linux/man-pages/man2/socket.2.html)
-
-
-### CGI Specification
-- [RFC 3875 - Common Gateway Interface](https://tools.ietf.org/html/rfc3875)
-
-
-## Team Contributions
-
-- **ayad**: Response handling and CGI implementation
-- **zel-yama**: Configuration parsing and server core functionality
-- **mohidbel**: Request handling, session management, and cookie implementation
+If you want a more concise developer README, diagrams (sequence/architecture), or example requests and responses added, tell me which and I will add them.
 
