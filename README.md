@@ -105,11 +105,35 @@ Authors
 - zel-yama — configuration parser and server core
 - mohidbel — request parsing, sessions, cookies
 
-References
-----------
-- HTTP: RFC 7230–7235
-- CGI: RFC 3875
-- epoll: Linux man pages and epoll tutorials
+Resources & RFCs
+----------------
+Authoritative specs and useful references used when implementing or studying this project.
+
+Standards (RFCs)
+- HTTP/1.1 message syntax and semantics: [RFC 7230](https://datatracker.ietf.org/doc/html/rfc7230), [RFC 7231](https://datatracker.ietf.org/doc/html/rfc7231) (methods, status codes), [RFC 7234](https://datatracker.ietf.org/doc/html/rfc7234) (caching), [RFC 7235](https://datatracker.ietf.org/doc/html/rfc7235) (authentication)
+- CGI: [RFC 3875](https://datatracker.ietf.org/doc/html/rfc3875)
+- Multipart/form-data (file uploads): [RFC 7578](https://datatracker.ietf.org/doc/html/rfc7578)
+- MIME / media types: [RFC 2045](https://datatracker.ietf.org/doc/html/rfc2045) and IANA media types registry (text, image, application) — https://www.iana.org/assignments/media-types/
+- URIs: [RFC 3986](https://datatracker.ietf.org/doc/html/rfc3986)
+
+Linux / system programming
+- `epoll` man page (overview): https://man7.org/linux/man-pages/man7/epoll.7.html
+- `epoll(2)` and related syscalls: https://man7.org/linux/man-pages/man2/epoll_create.2.html (see `epoll_create1`, `epoll_ctl`, `epoll_wait`)
+- `socket(2)` man page: https://man7.org/linux/man-pages/man2/socket.2.html
+- Non-blocking I/O and I/O multiplexing tutorials (practical guides):
+	- "Non-Blocking Sockets and I/O Multiplexing with epoll in C" — tutorial article (searchable)
+	- "The C10k Problem" — overview of scaling network servers: http://www.kegel.com/c10k.html
+
+Developer-friendly docs and tutorials
+- MDN Web Docs — HTTP overview: https://developer.mozilla.org/en-US/docs/Web/HTTP/Overview
+- MDN — HTTP methods: https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods
+- MDN — HTTP status codes: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status
+
+Additional reading
+- CGI examples and best practices: search for RFC 3875 examples and server-specific CGI guides (Apache, Nginx)
+- Multipart/form-data and form handling: see RFC 7578 and practical guides on handling uploads in C/C++
+
+If you want, I can convert this section into a one-page printable reference, add direct excerpts (short quotes) of relevant RFC sections, or add local copies of small RFCs for offline reading.
 
 License
 -------
